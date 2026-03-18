@@ -1,0 +1,5 @@
+bootloader - 512 bytes == 1 sector 
+
+Power ON -> BIOS runs from a chip on motherboard -> finds a bootable device -> loads the bootloader to the memory ->hands control to the os 
+
+Once the power button is pressed the POST starts working (Power on self test) this checks the working of the hardware devices and other things 
