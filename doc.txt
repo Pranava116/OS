@@ -3,3 +3,39 @@ bootloader - 512 bytes == 1 sector
 Power ON -> BIOS runs from a chip on motherboard -> finds a bootable device -> loads the bootloader to the memory ->hands control to the os 
 
 Once the power button is pressed the POST starts working (Power on self test) this checks the working of the hardware devices and other things 
+
+how can u run this clanker: 
+  install qemu 
+  create the bin file from the asm 
+  'qemu-system-x86_64 -fda <file_name.bin>'
+
+
+lodsb points to the firsy byte of the string 
+
+so what actually is happening is lodsb starts from the SI source register and keeps reading a single byte until it reaches al (last register)
+
+the line or al, al checks if the pointer is at the last if yes then PrintDone is executes 
+
+else store the charecter in the ah register
+  pls note that 0eh is same as 0x0e and int 10h is same as 0x10 'h' says hexadecimal 
+
+  after exiting from the Print segment it mobes to the PrintDone segment and exits printing 
+
+
+xor bx, bx (why mnake tis 0 and not everything else 0 you may ask, well that is because the interrupt kinda takes the register ax as an input so we want it to be 0 and not a random value )
+
+clears the value of the register bx to 0
+
+when we enter the bootloader we are in real mode and that is why we can call the api from the BIOS
+
+so the registers are similar to arguments in functions, BIOS takes the registers as inputs
+
+
+one of the most important part of this is the times 510 part:
+ so the line times is a loop in asm 
+ 510 is n (number of times to run)
+ ($- $$) gives the amount of bytes written so far 
+ $ indicates the current line and $$ indicates the first line 
+ therefore we need to run it 510-($-$$) times 
+ db 0 says place all the memory locations with 0 
+dw 0xAA55 this line defines a word of 2 bytes in the memory space 0xAA55 this will be the signature of the os
