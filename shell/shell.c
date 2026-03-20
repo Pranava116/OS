@@ -2,10 +2,11 @@
 
 void shell_main() {
     char input[100];
+    printf("--potatOS--")
 
     while (1) {
-        print("[potatOS] --> ");              
-        read_line(input);         
+        printf("[potatOS] --> ");              
+        read_line(input);  
         execute_command(input);  
     }
 }
