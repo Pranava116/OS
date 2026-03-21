@@ -1,0 +1,25 @@
+KERNEL
+
+entry.asm     kernel entry point, calls kernel_main
+isr.asm       keyboard interrupt handler
+linker.ld     places kernel at 1MB, defines memory sections
+kernel.c      init screen, PIC, IDT, enable interrupts
+print.c       writes to VGA buffer at 0xB8000
+idt.c         sets up 256-entry interrupt descriptor table
+pic.c         remaps PIC IRQs to 0x20-0x2F
+keyboard.c    reads scancodes from port 0x60
+
+
+BOOT PROTOCOL
+
+boot.asm      MBR, loads stage2 from sector 2 into 0x7E00
+stage2.asm    E820 memory detection, builds boot_info at 0x9000, switches to protected mode, jumps to kernel with boot_info pointer in EAX
+boot_info.h   defines e820_entry_t and boot_info_t (magic 0xCAFEBABE, entry_count, entries_addr)
+kernel.c      validates magic, walks E820 map, prints usable memory regions
+
+memory layout:
+  0x7C00   stage 1
+  0x7E00   stage 2
+  0x8000   E820 entries
+  0x9000   boot_info struct
+  0x100000 kernel
