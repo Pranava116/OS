@@ -20,6 +20,7 @@ kernel: $(BUILD)
 	$(CC) $(CFLAGS) kernel/src/idt.c -o $(BUILD)/idt.o
 	$(CC) $(CFLAGS) kernel/src/keyboard.c -o $(BUILD)/keyboard.o
 	$(CC) $(CFLAGS) kernel/src/pic.c -o $(BUILD)/pic.o
+	$(CC) $(CFLAGS) shell/input.c -o $(BUILD)/input.o
 	$(LD) $(LDFLAGS) \
 	$(BUILD)/entry.o \
 	$(BUILD)/isr.o \
@@ -28,6 +29,7 @@ kernel: $(BUILD)
 	$(BUILD)/idt.o \
 	$(BUILD)/keyboard.o \
 	$(BUILD)/pic.o \
+	$(BUILD)/input.o \
 	-o $(BUILD)/kernel.bin
 
 clean:
