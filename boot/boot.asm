@@ -35,14 +35,24 @@ Print:
 PrintDone:
     ret
 loader: 
-      xor ax, ax
-      mov ds, ax
+.Reset:
+      mov ah, 0
+      mov dl, 0
+      int 0x13
+      jc .Reset
+      mov ax, 0x1000
       mov es, ax
-      mov si, msg
-      call Print
-      xor ax, ax
-      int 0x12
+      xor bx, bx
+      mov ah, 0x02
+      mov al, 1
+      mov ch, 1
+      mov cl, 2
+      mov dh, 0
+      mov dl, 0
+      int 0x13
+      jmp 0x1000:0x0
       cli 
       hlt
 times 510 - ($ - $$) db 0
  dw 0xAA55
+

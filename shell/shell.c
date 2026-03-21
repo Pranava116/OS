@@ -1,12 +1,14 @@
 #include "shell.h"
 
-void shell_main() {
-    char input[100];
-    printf("--potatOS--")
+void shell_main(){
+    clear_screen();
+    print("Welcome to potatOS Shell\n");
+    print("Type 'help' to see commands.\n\n");
 
+    char input[100];
     while (1) {
-        printf("[potatOS] --> ");              
-        read_line(input);  
-        execute_command(input);  
+        print("potatOS> ");
+        read_line(input);
+        execute_command(input);
     }
 }
