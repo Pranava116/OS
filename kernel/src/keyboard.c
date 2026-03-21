@@ -38,8 +38,11 @@ void keyboard_handler() {
 }
 
 char get_char() {
-    if (tail == head) return 0;
+    while (tail == head){
+        asm volatile("hlt");
+    }
     char c = buffer[tail];
     tail = (tail + 1) % BUFFER_SIZE;
     return c;
 }
+    

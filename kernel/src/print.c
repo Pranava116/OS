@@ -21,22 +21,28 @@ void scroll() {
     cursor -= cols;
 }
 
-void print(const char *str) {
+void print(const char *str){
     char *video = (char *) 0xb8000;
     int i = 0;
-
-    while (str[i]) {
-        if (str[i] == '\n') {
+    while (str[i]){
+        if (str[i] == '\n'){
             cursor = (cursor / cols + 1) * cols;
-        } else {
-            video[cursor * 2]     = str[i];
+
+        }else if (str[i] == '\b'){
+            if (cursor > 0){
+                cursor--;
+                video[cursor * 2] = ' ';
+                video[cursor * 2 + 1] = color;
+            }
+        }else if (str[i] == '\t'){
+            cursor += 4;
+        }else {
+            video[cursor * 2] = str[i];
             video[cursor * 2 + 1] = color;
             cursor++;
-        }
-
-        if (cursor >= cols * rows) scroll();
-
-        i++;
+         }
+         if (cursor >= cols * rows) scroll();
+         i ++;
     }
 }
 
