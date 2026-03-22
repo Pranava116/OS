@@ -2,7 +2,7 @@ CC = gcc
 AS = nasm
 LD = ld
 
-CFLAGS  = -m32 -ffreestanding -c -nostdlib -I kernel/src
+CFLAGS  = -m32 -ffreestanding -c -nostdlib -I kernel/src -I lib -I shell
 LDFLAGS = -m elf_i386 -T kernel/arch/x86/linker.ld
 
 BUILD = build
@@ -39,12 +39,22 @@ $(BUILD)/keyboard.o: kernel/src/keyboard.c | $(BUILD)
 $(BUILD)/pic.o: kernel/src/pic.c | $(BUILD)
 	$(CC) $(CFLAGS) $< -o $@
 
+$(BUILD)/lib.o: lib/lib.c | $(BUILD)
+	$(CC) $(CFLAGS) $< -o $@
+
 $(BUILD)/input.o: shell/input.c | $(BUILD)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD)/command.o: shell/command.c | $(BUILD)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD)/shell.o: shell/shell.c | $(BUILD)
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD)/kernel.bin: $(BUILD)/entry.o $(BUILD)/isr.o $(BUILD)/kernel.o \
                      $(BUILD)/print.o $(BUILD)/idt.o $(BUILD)/keyboard.o \
-                     $(BUILD)/pic.o $(BUILD)/input.o
+                     $(BUILD)/pic.o $(BUILD)/lib.o $(BUILD)/input.o \
+                     $(BUILD)/command.o $(BUILD)/shell.o
 	$(LD) $(LDFLAGS) $^ -o $@
 
 $(BUILD)/os.img: $(BUILD)/boot.bin $(BUILD)/stage2.bin $(BUILD)/kernel.bin

@@ -1,4 +1,7 @@
 #include "shell.h"
+#include "print.h"
+#include "input.h"
+#include "command.h"
 
 void shell_main(){
     clear_screen();
