@@ -1,58 +1,44 @@
-bits 16 
-org 0x7c00
-start: jmp loader
+bits 16
+org 0x7C00
 
+start:
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov sp, 0x7C00
 
-TIMES 0Bh-$+start DB 0
-bpbBytesPerSector:  	DW 512
-bpbSectorsPerCluster: 	DB 1
-bpbReservedSectors: 	DW 1
-bpbNumberOfFATs: 	    DB 2
-bpbRootEntries: 	    DW 224
-bpbTotalSectors: 	    DW 2880
-bpbMedia: 	            DB 0xF0
-bpbSectorsPerFAT: 	    DW 9
-bpbSectorsPerTrack: 	DW 18
-bpbHeadsPerCylinder: 	DW 2
-bpbHiddenSectors: 	    DD 0
-bpbTotalSectorsBig:     DD 0
-bsDriveNumber: 	        DB 0
-bsUnused: 	            DB 0
-bsExtBootSignature: 	DB 0x29
-bsSerialNumber:	        DD 0xa0a1a2a3
-bsVolumeLabel: 	        DB "MOS FLOPPY "
-bsFileSystem: 	        DB "FAT12   "
+    mov [boot_drive], dl
 
-msg db "potatOS", 0
+    mov ah, 0x02
+    mov al, 4
+    mov ch, 0
+    mov cl, 2
+    mov dh, 0
+    mov dl, [boot_drive]
+    mov bx, 0x7E00
+    int 0x13
+    jc disk_error
 
-Print: 
+    jmp 0x0000:0x7E00
+
+disk_error:
+    mov si, err_msg
+    call print16
+    jmp $
+
+print16:
     lodsb
-    or        al, al
-    jz        PrintDone
-    mov       ah, 0eh
-    int       10h
-    jmp Print
-PrintDone:
+    or al, al
+    jz .done
+    mov ah, 0x0E
+    int 0x10
+    jmp print16
+.done:
     ret
-loader: 
-.Reset:
-      mov ah, 0
-      mov dl, 0
-      int 0x13
-      jc .Reset
-      mov ax, 0x1000
-      mov es, ax
-      xor bx, bx
-      mov ah, 0x02
-      mov al, 1
-      mov ch, 1
-      mov cl, 2
-      mov dh, 0
-      mov dl, 0
-      int 0x13
-      jmp 0x1000:0x0
-      cli 
-      hlt
-times 510 - ($ - $$) db 0
- dw 0xAA55
 
+boot_drive db 0
+err_msg    db "Disk error", 0
+
+times 510 - ($ - $$) db 0
+dw 0xAA55
