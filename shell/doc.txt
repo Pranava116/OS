@@ -1,0 +1,42 @@
+# potatOS Shell Documentation
+
+## Overview
+The potatOS shell provides a basic command-line interface (CLI) for interacting with the kernel. It is built to be modular, extensible, and efficient.
+
+## Features Implemented
+
+### 1. Advanced Input Handling (`shell/input.c`)
+- **Blocking `read_line`**: The shell waits for user input without consuming 100% CPU, using a blocking keyboard driver.
+- **Backspace Support**: Users can delete characters using the backspace key (\b), which correctly updates the internal buffer and the screen.
+- **Buffer Management**: Input is stored in a 100-character buffer and null-terminated for safety.
+
+### 2. Enhanced Output Handling (`kernel/src/print.c`)
+- **Control Character Support**:
+    - `\n` (Newline): Moves the cursor to the next line.
+    - `\t` (Tab): Advances the cursor by 4 spaces.
+    - `\b` (Backspace): Moves the cursor back, erases the character, and updates the video memory.
+- **Video Memory Integration**: Direct interaction with VGA memory (0xB8000) for fast rendering.
+
+### 3. Command Dispatching & Parsing (`shell/command.c`)
+- **Prefix Matching**: Uses `strncmp` from `lib/lib.c` to identify commands, allowing for arguments.
+- **Modular Dispatcher**: A clean `if-else` structure that makes it easy to add new commands.
+- **Implemented Commands**:
+    - `help`: Lists all available commands.
+    - `clear`: Clears the terminal screen.
+    - `version`: Displays the current version of potatOS.
+    - `echo [text]`: Prints the provided text back to the terminal.
+
+### 4. Modular Architecture
+- The shell logic is split into:
+    - `shell.c`: The main shell loop (`shell_main`).
+    - `input.c`: Lower-level line reading logic.
+    - `command.c`: Command execution and logic.
+- Dedicated headers (`shell.h`, `input.h`, `command.h`) ensure clean separation of concerns.
+
+### 5. Standard Library Support (`lib/lib.c`)
+- **`strcmp`**: For exact string comparisons.
+- **`strncmp`**: For prefix-based command parsing and argument handling.
+
+## Build System Integration
+- The `Makefile` has been updated to compile all shell-related modules and link them into the final `kernel.bin`.
+- Includes (`-I`) for `kernel/src`, `lib`, and `shell` are properly configured.

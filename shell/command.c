@@ -10,7 +10,6 @@ void execute_command(char* command) {
     } else if (strcmp(command, "version") == 0) {
         print("potatOS v0.1\n");
     } else if (strncmp(command, "echo ", 5) == 0) {
-        // Print everything after "echo "
         print(command + 5);
         print("\n");
     } else {
